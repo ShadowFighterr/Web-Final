@@ -7,6 +7,12 @@ document.addEventListener("DOMContentLoaded", function() {
         document.body.classList.toggle("dark-mode");
         theme = document.body.classList.contains("dark-mode") ? "dark" : "light";
         localStorage.setItem("theme", theme);
+
+        const htmlElements = document.querySelectorAll("header, main, footer, .card, .modal-content");
+        htmlElements.forEach(element => {
+            element.classList.toggle("dark-mode");
+            element.classList.toggle("light-mode");
+        });
     });
 
     fetch("Articles.json")
@@ -39,8 +45,8 @@ function renderArticles(articles) {
                     <div class="card-body">
                         <h5 class="card-title">${article.title}</h5>
                         <p class="card-text">${article.content.substring(0, 100)}...</p>
-                        <p class="text-muted">Category: ${article.category} | Date: ${article.date} | Views: ${article.views}</p>
-                        <p class="text-muted">Estimated Reading Time: ${readingTime} min</p>
+                        <p class="card-text">Category: ${article.category} | Date: ${article.date} | Views: ${article.views}</p>
+                        <p class="card-text">Estimated Reading Time: ${readingTime} min</p>
                         <button class="btn btn-primary" data-toggle="modal" data-target="#articleModal" onclick="viewArticle('${article.id}')">Read More</button>
                     </div>
                 </div>
@@ -49,15 +55,39 @@ function renderArticles(articles) {
         articlesContainer.innerHTML += articleHTML;
     });
 }
-
 function displayMostPopular(articles) {
     const mostPopular = articles.reduce((max, article) => article.views > max.views ? article : max);
     const popularHTML = `
-        <h5>${mostPopular.title}</h5>
-        <p class="text-muted">${mostPopular.content.substring(0, 100)}...</p>
-        <p>Views: ${mostPopular.views}</p>
+      <h5>${mostPopular.title}</h5>
+      <p>${mostPopular.content.substring(0, 100)}...</p>
+      <p>Views: ${mostPopular.views}</p>
+      <button class="btn btn-primary" data-toggle="modal" data-target="#articleModal" onclick="viewArticle('${mostPopular.id}')">Read</button>
     `;
     document.getElementById("most-popular").innerHTML = popularHTML;
+  }
+
+function viewArticle(articleId) {
+    const numericArticleId = Number(articleId);
+
+    fetch("Articles.json")
+        .then(response => response.json())
+        .then(data => {
+            const article = data.articles.find(a => a.id === numericArticleId);
+            console.log("Fetched article:", article); 
+
+            if (article) {
+                document.getElementById("articleModalLabel").textContent = article.title;
+                document.getElementById("articleContent").textContent = article.content;
+                document.getElementById("articleDetails").textContent = `Category: ${article.category} | Date: ${article.date} | Views: ${article.views}`;
+
+                $('#articleModal').modal('show');
+            } else {
+                console.error("Article not found with ID:", numericArticleId);
+            }
+        })
+        .catch(error => console.error("Error fetching articles:", error));
 }
 
-function viewArticle(articleId) {}
+document.querySelector('[data-dismiss="modal"]').addEventListener('click', function() {
+    $('#articleModal').modal('hide');  
+});
