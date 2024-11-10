@@ -1,28 +1,106 @@
-:root {
-    --bg-color-light: #f9f9f9;
-    --text-color-light: #333;
-    --bg-color-dark: #333;
-    --text-color-dark: #f9f9f9;
+body {
+    transition: background-color 0.3s, color 0.3s;
 }
 
-body.light-mode {
-    background-color: var(--bg-color-light);
-    color: var(--text-color-light);
-}
-
-body.dark-mode {
-    background-color: var(--bg-color-dark);
-    color: var(--text-color-dark);
-}
-
-.card {
-    transition: transform 0.3s ease;
-}
-
-.card:hover {
-    transform: scale(1.05);
+.light-mode {
+    background-color: #f4f6f9;
+    color: #333;
 }
 
 #theme-toggle {
-    cursor: pointer;
+    border-radius: 80%;
 }
+.light-mode .navbar,
+.light-mode .footer {
+    background-color: rgb(24, 12, 235);/* #007bff;*/
+    color: #fff;
+}
+
+.light-mode .card {
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+.light-mode .card .card-body {
+    color: #333;
+}
+
+.dark-mode {
+    background-color: #1f1f1f;
+    color: #e0e0e0;
+}
+
+.dark-mode .navbar,
+.dark-mode .footer {
+    background-color:rgb(25, 34, 212);
+    color: #fff;
+}
+
+.dark-mode .card {
+    background-color: #2a2a2a;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    border: 1px solid #3a3a3a;
+}
+
+.dark-mode .card .card-body {
+    color: #dcdcdc;
+}
+
+button, .btn {
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.light-mode .btn-primary {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+}
+
+.light-mode .btn-primary:hover {
+    background-color: #0056b3;
+    color: #fff;
+}
+
+.dark-mode .btn-primary {
+    background-color: #4a90e2;
+    color: #fff;
+    border: none;
+}
+
+.dark-mode .btn-primary:hover {
+    background-color: #357abd;
+    color: #fff;
+}
+
+aside {
+    transition: background-color 0.3s;
+}
+
+.light-mode aside {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.dark-mode aside {
+    background-color: #333;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+#most-popular {
+    border-radius: 8px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.light-mode #most-popular {
+    background-color: #ffffff;
+    color: #333;
+}
+
+.dark-mode #most-popular {
+    background-color: #2a2a2a;
+    color: #dcdcdc;
+}
+
