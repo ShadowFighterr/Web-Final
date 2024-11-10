@@ -1,0 +1,28 @@
+:root {
+    --bg-color-light: #f9f9f9;
+    --text-color-light: #333;
+    --bg-color-dark: #333;
+    --text-color-dark: #f9f9f9;
+}
+
+body.light-mode {
+    background-color: var(--bg-color-light);
+    color: var(--text-color-light);
+}
+
+body.dark-mode {
+    background-color: var(--bg-color-dark);
+    color: var(--text-color-dark);
+}
+
+.card {
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+#theme-toggle {
+    cursor: pointer;
+}
