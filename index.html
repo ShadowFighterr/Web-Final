@@ -22,31 +22,38 @@
         </div>
     </header>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container">
-            <a class="navbar-brand" href="#">News</a>
-            <button
-                class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarNav"
-            >
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <button id="theme-toggle" class="btn btn-secondary">Dark|Light</button>
-                    </li>
-                </ul>
-            </div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="#">News</a>
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <!-- Theme Toggle Button -->
+                <li class="nav-item me-2">
+                    <button id="theme-toggle" class="btn btn-secondary">Dark|Light</button>
+                </li>
+                <!-- Most Popular Article for Mobile View -->
+                <li class="nav-item d-block d-md-none">
+                    <div class="navbar-text" id="most-popular-mobile">
+                        <!-- Most Popular Article content will be dynamically loaded here on mobile view -->
+                    </div>
+                </li>
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <div class="container mt-4">
+<div class="container mt-4">
     <div class="row">
         <!-- Main Content Area -->
-        <main class="col-md-8 order-md-1 order-2">
+        <main class="col-md-8">
             <div class="mb-3">
                 <label for="sortOptions">Sort by:</label>
                 <select id="sortOptions" class="form-select w-auto d-inline-block">
@@ -59,9 +66,9 @@
             </div>
         </main>
 
-        <!-- Sidebar for Most Popular Article -->
-        <aside class="col-md-4 order-md-2 order-1 mb-4">
-            <div class="card">
+        <!-- Sidebar for Most Popular Article, hidden on small screens -->
+        <aside class="col-md-4 d-none d-md-block">
+            <div class="card mb-4">
                 <div class="card-header">
                     Most popular article
                 </div>
@@ -71,7 +78,6 @@
         </aside>
     </div>
 </div>
-
 
     <footer class="bg-dark text-white p-3 mt-4">
         <div class="container text-center">
