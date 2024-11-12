@@ -76,11 +76,19 @@ function displayMostPopularArticle() {
         (max, article) => (article.views > max.views ? article : max),
         articles[0]
     );
-    const container = document.getElementById('most-popular-article');
-    container.innerHTML = `
+
+    const containerSidebar = document.getElementById('most-popular-article');
+    containerSidebar.innerHTML = `
         <h5>${mostPopular.title}</h5>
         <p><small class="text-muted">${mostPopular.date} | ${mostPopular.category} | ${mostPopular.views} views</small></p>
         <button class="btn btn-primary" onclick="openArticleModal(${mostPopular.id})">Read More</button>
+    `;
+
+    const containerMobile = document.getElementById('most-popular-mobile');
+    containerMobile.innerHTML = `
+        <h6>${mostPopular.title}</h6>
+        <p><small class="text-muted">${mostPopular.date} | ${mostPopular.views} views</small></p>
+        <button class="btn btn-primary btn-sm" onclick="openArticleModal(${mostPopular.id})">Read More</button>
     `;
 }
 
