@@ -1,93 +1,116 @@
-document.addEventListener("DOMContentLoaded", function() {
-    let theme = localStorage.getItem("theme") || "light";
-    document.body.classList.add(`${theme}-mode`);
+let articles = [];
+let currentTheme = 'light';
 
-    document.getElementById("theme-toggle").addEventListener("click", () => {
-        document.body.classList.toggle("light-mode");
-        document.body.classList.toggle("dark-mode");
-        theme = document.body.classList.contains("dark-mode") ? "dark" : "light";
-        localStorage.setItem("theme", theme);
 
-        const htmlElements = document.querySelectorAll("header, main, footer, .card, .modal-content");
-        htmlElements.forEach(element => {
-            element.classList.toggle("dark-mode");
-            element.classList.toggle("light-mode");
-        });
+fetch('Articles.json')
+    .then(response => response.json())
+    .then(data => {
+        articles = data.articles;
+        displayArticles(articles);
+        displayMostPopularArticle();
     });
 
-    fetch("Articles.json")
-        .then(response => response.json())
-        .then(data => {
-            renderArticles(data.articles);
-            displayMostPopular(data.articles);
+function displayArticles(articlesArray) {
+    const container = document.getElementById('articles-container');
+    container.innerHTML = ''; 
+
+    articlesArray.forEach(article => {
+        const card = document.createElement('div');
+        card.className = 'card mb-3';
+
+        const cardBody = document.createElement('div');
+        cardBody.className = 'card-body';
+
+        const title = document.createElement('h5');
+        title.className = 'card-title';
+        title.textContent = article.title;
+
+        const info = document.createElement('p');
+        info.className = 'card-text';
+        info.innerHTML = `<small class="text-muted">${article.date} | ${article.category} | ${article.views} views</small>`;
+
+        const readingTime = document.createElement('p');
+        readingTime.className = 'card-text';
+        const estimatedTime = Math.ceil(article.wordCount / 200);
+        readingTime.innerHTML = `<small class="text-muted">Estimated reading time: ${estimatedTime} min</small>`;
+
+        const readMoreBtn = document.createElement('button');
+        readMoreBtn.className = 'btn btn-primary';
+        readMoreBtn.textContent = 'Read More';
+        readMoreBtn.addEventListener('click', () => {
+            openArticleModal(article.id);
         });
 
-    document.getElementById("sort-options").addEventListener("change", function() {
-        const sortBy = this.value;
-        fetch("Articles.json")
-            .then(response => response.json())
-            .then(data => {
-                const sortedArticles = data.articles.sort((a, b) => sortBy === "views" ? b.views - a.views : new Date(b.date) - new Date(a.date));
-                renderArticles(sortedArticles);
-            });
+        cardBody.appendChild(title);
+        cardBody.appendChild(info);
+        cardBody.appendChild(readingTime);
+        cardBody.appendChild(readMoreBtn);
+        card.appendChild(cardBody);
+        container.appendChild(card);
     });
+}
+
+
+function openArticleModal(articleId) {
+    const article = articles.find(a => a.id === articleId);
+    if (article) {
+        document.getElementById('articleModalLabel').textContent = article.title;
+        document.getElementById('articleModalContent').innerHTML = `<p>${article.content}</p>`;
+        const estimatedTime = Math.ceil(article.wordCount / 200);
+        document.getElementById('articleModalReadingTime').textContent = `Estimated reading time: ${estimatedTime} min`;
+
+        article.views += 1;
+
+        displayMostPopularArticle();
+
+        displayArticles(articles);
+
+        const articleModal = new bootstrap.Modal(document.getElementById('articleModal'));
+        articleModal.show();
+    }
+}
+
+
+function displayMostPopularArticle() {
+    const mostPopular = articles.reduce(
+        (max, article) => (article.views > max.views ? article : max),
+        articles[0]
+    );
+    const container = document.getElementById('most-popular-article');
+    container.innerHTML = `
+        <h5>${mostPopular.title}</h5>
+        <p><small class="text-muted">${mostPopular.date} | ${mostPopular.category} | ${mostPopular.views} views</small></p>
+        <button class="btn btn-primary" onclick="openArticleModal(${mostPopular.id})">Read More</button>
+    `;
+}
+
+
+document.getElementById('sortOptions').addEventListener('change', function () {
+    const sortBy = this.value;
+    if (sortBy === 'date') {
+        articles.sort((a, b) => new Date(b.date) - new Date(a.date));
+    } else if (sortBy === 'views') {
+        articles.sort((a, b) => b.views - a.views);
+    }
+    displayArticles(articles);
 });
 
-function renderArticles(articles) {
-    const articlesContainer = document.getElementById("articles");
-    articlesContainer.innerHTML = "";
+document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
 
-    articles.forEach(article => {
-        const readingTime = Math.ceil(article.wordCount / 200);
-        const articleHTML = `
-            <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">${article.title}</h5>
-                        <p class="card-text">${article.content.substring(0, 100)}...</p>
-                        <p class="card-text">Category: ${article.category} | Date: ${article.date} | Views: ${article.views}</p>
-                        <p class="card-text">Estimated Reading Time: ${readingTime} min</p>
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#articleModal" onclick="viewArticle('${article.id}')">Read More</button>
-                    </div>
-                </div>
-            </div>
-        `;
-        articlesContainer.innerHTML += articleHTML;
-    });
-}
-function displayMostPopular(articles) {
-    const mostPopular = articles.reduce((max, article) => article.views > max.views ? article : max);
-    const popularHTML = `
-      <h5>${mostPopular.title}</h5>
-      <p>${mostPopular.content.substring(0, 100)}...</p>
-      <p>Views: ${mostPopular.views}</p>
-      <button class="btn btn-primary" data-toggle="modal" data-target="#articleModal" onclick="viewArticle('${mostPopular.id}')">Read</button>
-    `;
-    document.getElementById("most-popular").innerHTML = popularHTML;
-  }
-
-function viewArticle(articleId) {
-    const numericArticleId = Number(articleId);
-
-    fetch("Articles.json")
-        .then(response => response.json())
-        .then(data => {
-            const article = data.articles.find(a => a.id === numericArticleId);
-            console.log("Fetched article:", article); 
-
-            if (article) {
-                document.getElementById("articleModalLabel").textContent = article.title;
-                document.getElementById("articleContent").textContent = article.content;
-                document.getElementById("articleDetails").textContent = `Category: ${article.category} | Date: ${article.date} | Views: ${article.views}`;
-
-                $('#articleModal').modal('show');
-            } else {
-                console.error("Article not found with ID:", numericArticleId);
-            }
-        })
-        .catch(error => console.error("Error fetching articles:", error));
+function toggleTheme() {
+    if (currentTheme === 'light') {
+        currentTheme = 'dark';
+    } else {
+        currentTheme = 'light';
+    }
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    localStorage.setItem('theme', currentTheme);
 }
 
-document.querySelector('[data-dismiss="modal"]').addEventListener('click', function() {
-    $('#articleModal').modal('hide');  
+window.addEventListener('DOMContentLoaded', () => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        currentTheme = savedTheme;
+        document.documentElement.setAttribute('data-theme', currentTheme);
+    }
 });
