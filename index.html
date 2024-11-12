@@ -44,35 +44,34 @@
     </nav>
 
     <div class="container mt-4">
-        <div class="row">
+    <div class="row">
+        <!-- Main Content Area -->
+        <main class="col-md-8 order-md-1 order-2">
+            <div class="mb-3">
+                <label for="sortOptions">Sort by:</label>
+                <select id="sortOptions" class="form-select w-auto d-inline-block">
+                    <option value="date">Date</option>
+                    <option value="views">Popularity</option>
+                </select>
+            </div>
 
-            <main class="col-md-8">
+            <div id="articles-container">
+            </div>
+        </main>
 
-                <div class="mb-3">
-                    <label for="sortOptions">Sort by:</label>
-                    <select id="sortOptions" class="form-select w-auto d-inline-block">
-                        <option value="date">Date</option>
-                        <option value="views">Popularity</option>
-                    </select>
+        <!-- Sidebar for Most Popular Article -->
+        <aside class="col-md-4 order-md-2 order-1 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    Most popular article
                 </div>
-
-                <div id="articles-container">
+                <div class="card-body" id="most-popular-article">
                 </div>
-
-            </main>
-
-            <aside class="col-md-4">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        Most popular article
-                    </div>
-                    <div class="card-body" id="most-popular-article">
-                    </div>
-                </div>
-            </aside>
-
-        </div>
+            </div>
+        </aside>
     </div>
+</div>
+
 
     <footer class="bg-dark text-white p-3 mt-4">
         <div class="container text-center">
